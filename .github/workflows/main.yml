@@ -1,0 +1,46 @@
+# This CI job installs Crystal and shard dependencies, then executes `crystal spec` to run the test suite
+# More configuration options are available at https://crystal-lang.github.io/install-crystal/configurator.html
+
+name: Matrix Build
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - master
+      - dev
+
+concurrency:
+  group: ${{ github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: macos-latest
+          - os: windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Download source
+        uses: actions/checkout@v4
+      - name: Install Crystal
+        uses: crystal-lang/install-crystal@v1
+      - name: Install shards
+        run: shards install
+      - name: Build
+        run: rake upload
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: choose-dev-${{ matrix.os }}
+          path: "upload/*"
+      - name: Upload to Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "upload/*"
