@@ -1,0 +1,13 @@
+name: choose
+version: 0.1.0
+
+authors:
+  - initdc <initd@outlook.com>
+
+targets:
+  choose:
+    main: src/choose.cr
+
+crystal: '>= 1.18.2'
+
+license: MPL-2.0
