@@ -4,6 +4,6 @@ describe Choose do
   # TODO: Write tests
 
   it "works" do
-    false.should eq(false)
+    false.should be_false
   end
 end

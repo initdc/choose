@@ -11,7 +11,7 @@ module Choose
     def self.banner
       str = <<-EOF
       choose - A wise license generator
-    
+
       Usage:
         choose <command> license [output] [--options]
 
