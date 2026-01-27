@@ -9,7 +9,7 @@ module Choose
     @@fullname : String?
 
     def self.banner
-      str = <<-EOF
+      <<-EOF
       choose - A wise license generator
 
       Usage:
@@ -28,8 +28,6 @@ module Choose
 
       Options:
       EOF
-
-      str
     end
 
     def self.run(argv)

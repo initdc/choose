@@ -25,7 +25,7 @@ class Choose::License
 
   class MoreThanOne < Exception; end
 
-  LICENSE_DIR = "#{__DIR__}/_license"
+  LICENSE_DIR = "_license"
 
   @@width = 80
 
