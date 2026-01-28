@@ -26,7 +26,7 @@ jobs:
         include:
           - os: ubuntu-latest
           - os: macos-latest
-          # - os: windows-latest
+          - os: windows-latest
     runs-on: ${{ matrix.os }}
     steps:
       - name: Download source
@@ -42,8 +42,14 @@ jobs:
         uses: crystal-lang/install-crystal@v1
       - name: Install shards
         run: shards install
-      - name: Build
+      - name: unix Build
+        if: "!startsWith(matrix.os, 'windows')"
         run: just upload
+      - name: windows Build
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          C:/msys64/usr/bin/pacman.exe -Sy --noconfirm zip
+          just upload
       - name: Upload Artifact
         uses: actions/upload-artifact@v5
         with:
