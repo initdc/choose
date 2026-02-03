@@ -15,8 +15,8 @@ on:
       - "v*"
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.sha }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/tags/v') }}
 
 jobs:
   test:
@@ -25,7 +25,8 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-          - os: macos-latest
+          - os: macos-15
+          - os: macos-15-intel
           - os: windows-latest
     runs-on: ${{ matrix.os }}
     steps:
@@ -35,7 +36,7 @@ jobs:
         with:
           repo: casey/just
       - uses: actions/setup-go@v5
-        if: "!startsWith(matrix.os, 'ubuntu')"
+        if: ${{ !startsWith(matrix.os, 'ubuntu') }}
         with:
           go-version: stable
       - name: Install Crystal
@@ -43,7 +44,7 @@ jobs:
       - name: Install shards
         run: shards install
       - name: unix Build
-        if: "!startsWith(matrix.os, 'windows')"
+        if: ${{ !startsWith(matrix.os, 'windows') }}
         run: just upload
       - name: windows Build
         if: startsWith(matrix.os, 'windows')
@@ -53,7 +54,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v5
         with:
-          name: choose-${{ github.ref_name }}-${{ matrix.os }}.zip
+          name: choose-${{ github.ref_name }}-${{ matrix.os }}
           path: |
             upload/*.zip
             upload/*.sha256sum

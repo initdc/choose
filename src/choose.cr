@@ -2,7 +2,7 @@ require "option_parser"
 require "./choose/license"
 
 module Choose
-  VERSION = "0.1.0"
+  VERSION = "0.1.1"
 
   class Cli
     @@year : String?
@@ -71,7 +71,7 @@ module Choose
             command = args[0]
             case command
             when "list"
-              puts Choose::License.glob("").map(&.split("/")[-1].sub(".txt", "")).join("\n")
+              puts Choose::License.glob("").map(&.stem).join("\n")
             when "help"
               puts parser
               exit
@@ -81,8 +81,8 @@ module Choose
               year = @@year || Time.utc.year.to_s
               fullname = @@fullname || Choose::Cli.git_user_name
 
-              path, raw = Choose::License.path_raw(license.to_s)
-              license_key = path.split("/")[-1].sub(".txt", "")
+              path, raw = Choose::License.path_raw(license)
+              license_key = path.stem
               raw = Choose::Cli.replace(license_key, raw, year, fullname)
 
               File.write("LICENSE", raw)
@@ -92,7 +92,7 @@ module Choose
             license = args[1]
             case command
             when "list"
-              puts Choose::License.glob(license).map(&.split("/")[-1].sub(".txt", "")).join("\n")
+              puts Choose::License.glob(license).map(&.stem).join("\n")
             when "info"
               Choose::License.info(license)
             when "need"
@@ -104,11 +104,11 @@ module Choose
               year = @@year || Time.utc.year.to_s
               fullname = @@fullname || Choose::Cli.git_user_name
 
-              path, raw = Choose::License.path_raw(license.to_s)
-              license_key = path.split("/")[-1].sub(".txt", "")
+              path, raw = Choose::License.path_raw(license)
+              license_key = path.stem
               raw = Choose::Cli.replace(license_key, raw, year, fullname)
 
-              File.write(output.to_s, raw)
+              File.write(output, raw)
             end
           else
             puts "Too many arguments"

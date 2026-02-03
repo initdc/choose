@@ -25,7 +25,7 @@ class Choose::License
 
   class MoreThanOne < Exception; end
 
-  LICENSE_DIR = "_license"
+  LICENSE_DIR = Path["_license"]
 
   @@width = 80
 
@@ -55,19 +55,19 @@ class Choose::License
 
   def self.glob(pattern : String)
     pattern = pattern.downcase
-    if File.exists?("#{LICENSE_DIR}/#{pattern}.txt")
-      return ["#{LICENSE_DIR}/#{pattern}.txt"]
+    if File.exists?(LICENSE_DIR / "#{pattern}.txt")
+      return [LICENSE_DIR / "#{pattern}.txt"]
     end
 
     if !pattern.ends_with?("*")
       pattern = pattern + "*"
     end
-    Dir.glob("#{LICENSE_DIR}/#{pattern}").sort
+    Dir.glob(LICENSE_DIR / pattern).map { |x| Path[x] }.sort!
   end
 
   def self.parse(pattern : String)
     files = glob(pattern)
-    if files.size != 0
+    if files.size > 0
       files.map { |f| LicenseType.from_yaml(File.read(f)) }
     else
       raise Choose::License::NotFound.new("License not found: #{pattern}")
@@ -138,11 +138,11 @@ class Choose::License
     files = glob(pattern)
     case files.size
     when 1
-      return files[0], File.read(files[0]).split("\n---\n\n")[1]
+      return files[0], File.read(files[0]).split(/\R---\R\R/)[1]
     when 0
       raise Choose::License::NotFound.new("License not found: #{pattern}")
     else
-      puts "  - " + files.map(&.split("/")[-1]).join("\n  - ")
+      puts "  - " + files.map(&.stem).join("\n  - ")
       raise Choose::License::MoreThanOne.new("More than one license found: #{pattern}")
     end
   end

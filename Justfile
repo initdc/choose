@@ -1,5 +1,5 @@
 NAME := "choose"
-VERSION := "v0.1.0"
+VERSION := "v0.1.1"
 
 WORKDIR := justfile_directory()
 GOOS := shell("go env GOOS")
