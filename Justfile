@@ -1,5 +1,5 @@
 NAME := "choose"
-VERSION := "v0.1.1"
+VERSION := "v0.1.2"
 
 WORKDIR := justfile_directory()
 GOOS := shell("go env GOOS")
@@ -19,10 +19,13 @@ build:
 release:
   shards build --release
 
+static:
+  shards build --release --static
+
 run ARGS="": build
   cd src/{{NAME}} && {{WORKDIR}}/bin/{{NAME}} {{ ARGS }}
 
-target: release
+target:
   mkdir -p target/{{TARGETPLATFORM}}
   ln -f bin/{{NAME}} target/{{TARGETPLATFORM}}/
   cp -a src/{{NAME}}/{{DATA}} target/{{TARGETPLATFORM}}/
@@ -30,7 +33,7 @@ target: release
 
   cd target/{{TARGETPLATFORM}}/ && ./{{NAME}} list
 
-upload: release
+upload:
   mkdir -p upload/{{PROGRAM}}
   ln -f bin/{{NAME}} upload/{{PROGRAM}}/
   cp -a src/{{NAME}}/{{DATA}} upload/{{PROGRAM}}/
@@ -40,7 +43,7 @@ upload: release
   cd upload && just zip '-r {{PROGRAM}}.zip {{PROGRAM}}'
   cd upload && just sha256sum '{{PROGRAM}}.zip >> {{PROGRAM}}.sha256sum'
 
-upload-single: release
+upload-single:
   mkdir -p upload
   ln -f bin/{{NAME}} upload/{{PROGRAM}}
   # tree upload

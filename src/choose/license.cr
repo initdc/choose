@@ -25,9 +25,11 @@ class Choose::License
 
   class MoreThanOne < Exception; end
 
-  LICENSE_DIR = Path["_license"]
-
   @@width = 80
+
+  private def self.license_dir
+    Path.new(Process.executable_path.to_s).parent / "_license"
+  end
 
   private def self.auto_wrap(str : String, width : Int32 = @@width)
     words = str.split(/\s+/) # one or more spaces
@@ -55,14 +57,14 @@ class Choose::License
 
   def self.glob(pattern : String)
     pattern = pattern.downcase
-    if File.exists?(LICENSE_DIR / "#{pattern}.txt")
-      return [LICENSE_DIR / "#{pattern}.txt"]
+    if File.exists?(license_dir / "#{pattern}.txt")
+      return [license_dir / "#{pattern}.txt"]
     end
 
     if !pattern.ends_with?("*")
       pattern = pattern + "*"
     end
-    Dir.glob(LICENSE_DIR / pattern).map { |x| Path[x] }.sort!
+    Dir.glob(license_dir / pattern).map { |x| Path[x] }.sort!
   end
 
   def self.parse(pattern : String)

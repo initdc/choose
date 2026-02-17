@@ -43,13 +43,21 @@ jobs:
         uses: crystal-lang/install-crystal@v1
       - name: Install shards
         run: shards install
-      - name: unix Build
-        if: ${{ !startsWith(matrix.os, 'windows') }}
-        run: just upload
+      - name: ubuntu Build
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          just static
+          just upload
+      - name: macos Build
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          just release
+          just upload
       - name: windows Build
         if: startsWith(matrix.os, 'windows')
         run: |
           C:/msys64/usr/bin/pacman.exe -Sy --noconfirm zip
+          just static
           just upload
       - name: Upload Artifact
         uses: actions/upload-artifact@v5

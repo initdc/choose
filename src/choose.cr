@@ -2,7 +2,7 @@ require "option_parser"
 require "./choose/license"
 
 module Choose
-  VERSION = "0.1.1"
+  VERSION = "0.1.2"
 
   class Cli
     @@year : String?
