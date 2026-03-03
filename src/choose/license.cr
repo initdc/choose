@@ -92,8 +92,7 @@ class Choose::License
       puts auto_wrap license.description
       puts
 
-      print "how: "
-      puts auto_wrap license.how
+      puts auto_wrap "how: " + license.how
       puts
 
       if license.note
@@ -122,15 +121,15 @@ class Choose::License
       end
 
       puts "permissions:"
-      puts "  - " + license.permissions.join("\n  - ")
+      puts "  ✓ " + license.permissions.join("\n  ✓ ")
       puts
 
       puts "conditions:"
-      puts "  - " + license.conditions.join("\n  - ")
+      puts "  ! " + license.conditions.join("\n  ! ")
       puts
 
       puts "limitations:"
-      puts "  - " + license.limitations.join("\n  - ")
+      puts "  ✗ " + license.limitations.join("\n  ✗ ")
       puts
     end
     puts "-" * @@width
