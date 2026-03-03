@@ -23,7 +23,8 @@ static:
   shards build --release --static
 
 run ARGS="": build
-  cd src/{{NAME}} && {{WORKDIR}}/bin/{{NAME}} {{ ARGS }}
+  just upload
+  upload/{{PROGRAM}}/{{NAME}} {{ ARGS }}
 
 target:
   mkdir -p target/{{TARGETPLATFORM}}
@@ -31,7 +32,7 @@ target:
   cp -a src/{{NAME}}/{{DATA}} target/{{TARGETPLATFORM}}/
   # tree target
 
-  cd target/{{TARGETPLATFORM}}/ && ./{{NAME}} list
+  target/{{TARGETPLATFORM}}/{{NAME}} list
 
 upload:
   mkdir -p upload/{{PROGRAM}}
@@ -39,7 +40,7 @@ upload:
   cp -a src/{{NAME}}/{{DATA}} upload/{{PROGRAM}}/
   # tree upload
 
-  cd upload/{{PROGRAM}}/ && ./{{NAME}} list
+  upload/{{PROGRAM}}/{{NAME}} list
   cd upload && just zip '-r {{PROGRAM}}.zip {{PROGRAM}}'
   cd upload && just sha256sum '{{PROGRAM}}.zip >> {{PROGRAM}}.sha256sum'
 
